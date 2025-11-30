@@ -1,15 +1,16 @@
 package com.eCommerce.eCommerce.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "users")
 public class User {
@@ -27,6 +28,22 @@ public class User {
 
     @JoinColumn(name = "password")
     private String password;
+
+    @OneToOne(mappedBy = "user_id")
+    private Profile profile;
+
+    @OneToMany(mappedBy = "user_id")
+    private List<Addresses> addresses = new ArrayList<>();
+
+    public void addAddresses(Addresses address){
+        addresses.add(address);
+        address.setUser(this);
+    }
+
+    public void removeAddresses(Addresses address){
+        addresses.remove(address);
+        address.setUser(null);
+    }
 
 
 
