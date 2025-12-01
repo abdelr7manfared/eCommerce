@@ -1,5 +1,6 @@
 package com.eCommerce.eCommerce.controllers;
 
+import com.eCommerce.eCommerce.dtos.UserDto;
 import com.eCommerce.eCommerce.entities.User;
 import com.eCommerce.eCommerce.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,11 @@ public class UserController {
    @Autowired
    private UserService userService;
     @GetMapping
-    public Iterable<User> getAllUsers(){
+    public List<UserDto> getAllUsers(){
         return userService.getAllUsers();
     }
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id){
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id){
         return userService.getUser(id);
     }
 }
