@@ -18,17 +18,17 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "id")
+    @Column(name = "id")
     private Long id;
 
-    @JoinColumn(name = "name")
+    @Column(name = "name")
     private String name;
 
 
-    @JoinColumn(name = "email")
+    @Column(name = "email")
     private String email;
 
-    @JoinColumn(name = "password")
+    @Column(name = "password")
     private String password;
 
     @OneToOne(mappedBy = "user")

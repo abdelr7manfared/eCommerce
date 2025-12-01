@@ -1,23 +1,28 @@
 package com.eCommerce.eCommerce.services;
 
 import com.eCommerce.eCommerce.dtos.UserDto;
-import com.eCommerce.eCommerce.entities.User;
+import com.eCommerce.eCommerce.mappers.UserMapper;
 import com.eCommerce.eCommerce.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+@AllArgsConstructor
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final   UserRepository userRepository;
+    private final UserMapper userMapper;
 
     public List<UserDto> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> new UserDto(user.getId(),user.getName(),user.getEmail()))
+             //   .map(user -> new UserDto(user.getId(),user.getName(),user.getEmail()))
+                 .map(userMapper::toDto)
+                // user -> useMapper.toDto(user)
                 .toList();
     }
 
@@ -26,8 +31,7 @@ public class UserService {
         if (user == null){
             return ResponseEntity.notFound().build();
         }
-        UserDto userDto = new UserDto(user.getId(),user.getName(),user.getEmail());
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(userMapper.toDto(user));
 
     }
 }

@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @Table(name = "profiles")
 public class Profile {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "bio")
