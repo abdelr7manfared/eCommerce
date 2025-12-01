@@ -3,6 +3,9 @@ package com.eCommerce.eCommerce.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,5 +21,7 @@ public class Category {
 
     @Column(name = "name")
     private String name;
+    @OneToMany(mappedBy = "category")
+    private Set<Product> products = new HashSet<>();
 
 }

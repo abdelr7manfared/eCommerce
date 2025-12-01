@@ -31,10 +31,10 @@ public class User {
     @JoinColumn(name = "password")
     private String password;
 
-    @OneToOne(mappedBy = "user_id")
+    @OneToOne(mappedBy = "user")
     private Profile profile;
 
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "user")
     private List<Addresses> addresses = new ArrayList<>();
 
     public void addAddresses(Addresses address){
@@ -49,7 +49,7 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "favoiriteProduct",
+            name = "favoriteProduct",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns =  @JoinColumn(name = "product_id")
     )
