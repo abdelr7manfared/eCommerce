@@ -2,6 +2,7 @@ package com.eCommerce.eCommerce.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.repository.cdi.Eager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
