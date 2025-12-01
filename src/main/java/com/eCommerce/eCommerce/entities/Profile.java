@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class Profile {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "bio")
