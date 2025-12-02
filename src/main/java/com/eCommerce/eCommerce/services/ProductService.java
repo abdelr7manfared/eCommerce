@@ -1,12 +1,11 @@
 package com.eCommerce.eCommerce.services;
 
-import com.eCommerce.eCommerce.dtos.ProductDto;
+import com.eCommerce.eCommerce.dtos.responses.ProductDto;
 import com.eCommerce.eCommerce.entities.Product;
 import com.eCommerce.eCommerce.mappers.ProductMapper;
 import com.eCommerce.eCommerce.repositories.CategoryRepository;
 import com.eCommerce.eCommerce.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;

@@ -1,6 +1,6 @@
 package com.eCommerce.eCommerce.mappers;
 
-import com.eCommerce.eCommerce.dtos.ProductDto;
+import com.eCommerce.eCommerce.dtos.responses.ProductDto;
 import com.eCommerce.eCommerce.entities.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

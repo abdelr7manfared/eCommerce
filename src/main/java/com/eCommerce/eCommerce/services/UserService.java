@@ -1,13 +1,12 @@
 package com.eCommerce.eCommerce.services;
 
-import com.eCommerce.eCommerce.dtos.ChangePasswordRequest;
-import com.eCommerce.eCommerce.dtos.RegisterUserRequest;
-import com.eCommerce.eCommerce.dtos.UpdateUserRequest;
-import com.eCommerce.eCommerce.dtos.UserDto;
+import com.eCommerce.eCommerce.dtos.requests.ChangePasswordRequest;
+import com.eCommerce.eCommerce.dtos.requests.RegisterUserRequest;
+import com.eCommerce.eCommerce.dtos.requests.UpdateUserRequest;
+import com.eCommerce.eCommerce.dtos.responses.UserDto;
 import com.eCommerce.eCommerce.mappers.UserMapper;
 import com.eCommerce.eCommerce.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -44,7 +44,12 @@ public class UserService {
 
     }
 
-    public ResponseEntity<UserDto> createUser(RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> registerUser(RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
+        if (userRepository.existsByEmail(request.getEmail())){
+            return ResponseEntity.badRequest().body(
+                    Map.of("email","Email already Registered.")
+            );
+        }
         var user = userMapper.toEntity(request);
         userRepository.save(user);
         var userDto = userMapper.toDto(user);

@@ -1,8 +1,6 @@
 package com.eCommerce.eCommerce.repositories;
 
-import com.eCommerce.eCommerce.dtos.ProductDto;
 import com.eCommerce.eCommerce.entities.Product;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

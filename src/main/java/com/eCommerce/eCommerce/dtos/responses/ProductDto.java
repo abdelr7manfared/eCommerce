@@ -1,9 +1,5 @@
-package com.eCommerce.eCommerce.dtos;
+package com.eCommerce.eCommerce.dtos.responses;
 
-import com.eCommerce.eCommerce.entities.Category;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package com.eCommerce.eCommerce.dtos;
+package com.eCommerce.eCommerce.dtos.requests;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package com.eCommerce.eCommerce.controllers;
 
-import com.eCommerce.eCommerce.dtos.ProductDto;
+import com.eCommerce.eCommerce.dtos.responses.ProductDto;
 import com.eCommerce.eCommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
