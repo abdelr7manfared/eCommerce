@@ -60,4 +60,13 @@ public class UserService {
         userRepository.save(user);
         return ResponseEntity.ok(userMapper.toDto(user));
     }
+
+    public ResponseEntity<Void> deleteUser(Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null){
+            return ResponseEntity.notFound().build();
+        }
+        userRepository.delete(user);
+        return ResponseEntity.noContent().build();
+    }
 }
