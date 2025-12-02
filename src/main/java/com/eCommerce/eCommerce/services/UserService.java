@@ -1,5 +1,7 @@
 package com.eCommerce.eCommerce.services;
 
+import com.eCommerce.eCommerce.dtos.RegisterUserRequest;
+import com.eCommerce.eCommerce.dtos.UpdateUserRequest;
 import com.eCommerce.eCommerce.dtos.UserDto;
 import com.eCommerce.eCommerce.mappers.UserMapper;
 import com.eCommerce.eCommerce.repositories.UserRepository;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Set;
@@ -37,5 +40,24 @@ public class UserService {
         }
         return ResponseEntity.ok(userMapper.toDto(user));
 
+    }
+
+    public ResponseEntity<UserDto> createUser(RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
+        var user = userMapper.toEntity(request);
+        userRepository.save(user);
+        var userDto = userMapper.toDto(user);
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
+        return ResponseEntity.created(uri).body(userDto);
+    }
+
+
+    public ResponseEntity<UserDto> updateUser(UpdateUserRequest request, Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null){
+            return ResponseEntity.notFound().build();
+        }
+        userMapper.update(request,user);
+        userRepository.save(user);
+        return ResponseEntity.ok(userMapper.toDto(user));
     }
 }
