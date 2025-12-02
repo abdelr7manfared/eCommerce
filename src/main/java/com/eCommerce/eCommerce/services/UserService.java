@@ -1,5 +1,6 @@
 package com.eCommerce.eCommerce.services;
 
+import com.eCommerce.eCommerce.dtos.ChangePasswordRequest;
 import com.eCommerce.eCommerce.dtos.RegisterUserRequest;
 import com.eCommerce.eCommerce.dtos.UpdateUserRequest;
 import com.eCommerce.eCommerce.dtos.UserDto;
@@ -8,6 +9,7 @@ import com.eCommerce.eCommerce.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -68,5 +70,19 @@ public class UserService {
         }
         userRepository.delete(user);
         return ResponseEntity.noContent().build();
+    }
+
+    public ResponseEntity<Void> changePassword(Long id, ChangePasswordRequest request) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null){
+            return ResponseEntity.notFound().build();
+        }
+        if (!user.getPassword().equals(request.getOldPassword())){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        user.setPassword(request.getNewPassword());
+        userRepository.save(user);
+        return ResponseEntity.noContent().build();
+
     }
 }

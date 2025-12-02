@@ -1,5 +1,6 @@
 package com.eCommerce.eCommerce.controllers;
 
+import com.eCommerce.eCommerce.dtos.ChangePasswordRequest;
 import com.eCommerce.eCommerce.dtos.RegisterUserRequest;
 import com.eCommerce.eCommerce.dtos.UpdateUserRequest;
 import com.eCommerce.eCommerce.dtos.UserDto;
@@ -51,6 +52,15 @@ public class UserController {
        return userService.deleteUser(id);
 
    }
+
+   @PostMapping("/{id}/change-password")
+   public ResponseEntity<Void> changePassword(
+           @PathVariable Long id,
+           @RequestBody ChangePasswordRequest request
+           ){
+       return userService.changePassword(id,request);
+   }
+
 
 
 
