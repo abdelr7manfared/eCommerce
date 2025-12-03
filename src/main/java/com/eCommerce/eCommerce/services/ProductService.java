@@ -2,6 +2,8 @@ package com.eCommerce.eCommerce.services;
 
 import com.eCommerce.eCommerce.dtos.responses.ProductDto;
 import com.eCommerce.eCommerce.entities.Product;
+import com.eCommerce.eCommerce.exceptions.CategoryNotFoundException;
+import com.eCommerce.eCommerce.exceptions.ProductNotFoundException;
 import com.eCommerce.eCommerce.mappers.ProductMapper;
 import com.eCommerce.eCommerce.repositories.CategoryRepository;
 import com.eCommerce.eCommerce.repositories.ProductRepository;
@@ -33,49 +35,47 @@ public class ProductService {
                 .toList();
     }
 
-    public ResponseEntity<ProductDto> getProductById(Long id) {
+    public ProductDto getProductById(Long id) {
         var product = productRepository.findById(id).orElse(null);
         if (product == null){
-            return ResponseEntity.notFound().build();
+            throw new ProductNotFoundException();
         }
-        return ResponseEntity.ok(productMapper.toDto(product));
+        return productMapper.toDto(product);
     }
 
-    public ResponseEntity<ProductDto> createProduct(ProductDto productDto, UriComponentsBuilder builder) {
+    public ProductDto createProduct(ProductDto productDto) {
         var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
         if (category == null){
-            return ResponseEntity.badRequest().build();
+            throw new CategoryNotFoundException();
         }
         var product = productMapper.toEntity(productDto);
         productRepository.save(product);
         productDto.setId(product.getId());
-        var uri = builder.path("/products/{id}").buildAndExpand(product.getId()).toUri();
-        return ResponseEntity.created(uri).body(productDto);
+        return productDto;
     }
 
-    public ResponseEntity<ProductDto> updateProduct(Long id, ProductDto productDto) {
+    public ProductDto updateProduct(Long id, ProductDto productDto) {
         var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
         if (category == null){
-            return ResponseEntity.badRequest().build();
+            throw new CategoryNotFoundException();
         }
         var product = productRepository.findById(id).orElse(null);
         if (product == null){
-            return ResponseEntity.notFound().build();
+            throw new ProductNotFoundException();
         }
         productMapper.update(productDto,product);
         product.setCategory(category);
         productRepository.save(product);
 
-        return ResponseEntity.ok(productMapper.toDto(product));
+        return productMapper.toDto(product);
     }
 
-    public ResponseEntity<Void> deleteProduct(Long id) {
+    public void deleteProduct(Long id) {
 
         var product = productRepository.findById(id).orElse(null);
         if (product == null){
-            return ResponseEntity.notFound().build();
+            throw new ProductNotFoundException();
         }
         productRepository.delete(product);
-        return ResponseEntity.noContent().build();
     }
 }

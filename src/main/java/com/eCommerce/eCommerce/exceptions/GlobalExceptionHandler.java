@@ -1,5 +1,6 @@
 package com.eCommerce.eCommerce.exceptions;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,4 +22,48 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    @ExceptionHandler(CartNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleCartNotFound(){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of("error","cart not found")
+        );
+    }
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleProductNotFound(){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of("error","product not found")
+        );
+    }
+
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleUsertNotFound(){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of("error","user not found")
+        );
+    }
+
+
+    @ExceptionHandler(InvalidOldPasswordException.class)
+    public ResponseEntity<Map<String,String>> handleInvalidOldPassword(){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                Map.of("error","wrong password")
+        );
+    }
+
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<Map<String,String>> handleEmailAlreadyExists(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                Map.of("error","email already exist")
+        );
+    }
+
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleCategoryNotFound(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                Map.of("error","category not found")
+        );
+    }
 }

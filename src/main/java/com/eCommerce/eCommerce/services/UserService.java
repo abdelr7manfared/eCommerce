@@ -4,6 +4,9 @@ import com.eCommerce.eCommerce.dtos.requests.ChangePasswordRequest;
 import com.eCommerce.eCommerce.dtos.requests.RegisterUserRequest;
 import com.eCommerce.eCommerce.dtos.requests.UpdateUserRequest;
 import com.eCommerce.eCommerce.dtos.responses.UserDto;
+import com.eCommerce.eCommerce.exceptions.EmailAlreadyExistsException;
+import com.eCommerce.eCommerce.exceptions.InvalidOldPasswordException;
+import com.eCommerce.eCommerce.exceptions.UserNotFoundException;
 import com.eCommerce.eCommerce.mappers.UserMapper;
 import com.eCommerce.eCommerce.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,59 +39,53 @@ public class UserService {
                 .toList();
     }
 
-    public ResponseEntity<UserDto> getUser(Long id) {
+    public UserDto getUser(Long id) {
         var user =  userRepository.findById(id).orElse(null);
         if (user == null){
-            return ResponseEntity.notFound().build();
+            throw new UserNotFoundException();
         }
-        return ResponseEntity.ok(userMapper.toDto(user));
+        return userMapper.toDto(user);
 
     }
 
-    public ResponseEntity<?> registerUser(RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
+    public UserDto registerUser(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())){
-            return ResponseEntity.badRequest().body(
-                    Map.of("email","Email already Registered.")
-            );
+            throw new EmailAlreadyExistsException();
         }
         var user = userMapper.toEntity(request);
         userRepository.save(user);
-        var userDto = userMapper.toDto(user);
-        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
-        return ResponseEntity.created(uri).body(userDto);
+        return   userMapper.toDto(user);
     }
 
 
-    public ResponseEntity<UserDto> updateUser(UpdateUserRequest request, Long id) {
+    public UserDto updateUser(UpdateUserRequest request, Long id) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null){
-            return ResponseEntity.notFound().build();
+            throw new UserNotFoundException();
         }
         userMapper.update(request,user);
         userRepository.save(user);
-        return ResponseEntity.ok(userMapper.toDto(user));
+        return userMapper.toDto(user);
     }
 
-    public ResponseEntity<Void> deleteUser(Long id) {
+    public void deleteUser(Long id) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null){
-            return ResponseEntity.notFound().build();
+            throw new UserNotFoundException();
         }
         userRepository.delete(user);
-        return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<Void> changePassword(Long id, ChangePasswordRequest request) {
+    public void changePassword(Long id, ChangePasswordRequest request) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null){
-            return ResponseEntity.notFound().build();
+            throw new UserNotFoundException();
         }
         if (!user.getPassword().equals(request.getOldPassword())){
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            throw new InvalidOldPasswordException();
         }
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
-        return ResponseEntity.noContent().build();
 
     }
 }

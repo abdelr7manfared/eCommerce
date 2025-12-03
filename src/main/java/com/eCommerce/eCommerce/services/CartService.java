@@ -1,20 +1,17 @@
 package com.eCommerce.eCommerce.services;
 
-import com.eCommerce.eCommerce.dtos.requests.AddItemToCartRequest;
 import com.eCommerce.eCommerce.dtos.requests.CartDto;
 import com.eCommerce.eCommerce.dtos.requests.CartItemDto;
-import com.eCommerce.eCommerce.dtos.requests.UpdateCartItemRequest;
 import com.eCommerce.eCommerce.entities.Cart;
-import com.eCommerce.eCommerce.entities.CartItem;
+import com.eCommerce.eCommerce.exceptions.CartNotFoundException;
+import com.eCommerce.eCommerce.exceptions.ProductNotFoundException;
 import com.eCommerce.eCommerce.mappers.CartMapper;
-import com.eCommerce.eCommerce.mappers.ProductMapper;
 import com.eCommerce.eCommerce.repositories.CartRepostory;
 import com.eCommerce.eCommerce.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 import java.util.UUID;
@@ -26,81 +23,77 @@ public class CartService {
     private final ProductRepository productRepository;
 
     private final CartMapper cartMapper;
-    public ResponseEntity<CartDto> createCart(UriComponentsBuilder builder) {
+    public CartDto createCart() {
         var cart =  cartRepostory.save(new Cart() );
-        var cartDto = cartMapper.toDto(cart);
-        var uri =  builder.path("carts").buildAndExpand(cart.getId()).toUri();
-        return ResponseEntity.created(uri).body(cartDto);
+        return cartMapper.toDto(cart);
     }
 
-    public ResponseEntity<CartItemDto> addProductToCart(UUID uuid, AddItemToCartRequest cartRequest) {
+    public CartItemDto addProductToCart(UUID uuid, Long productId) {
         var cart = cartRepostory.findById(uuid).orElse(null);
         if (cart == null){
-            return ResponseEntity.notFound().build();
-        }
-        var product = productRepository.findById(cartRequest.getProductId()).orElse(null);
-        if (product == null){
-            return ResponseEntity.badRequest().build();
-        }
-        var cartItem = cart.getCartItems().stream()
-                .filter(u -> u.getProduct().getId().equals(product.getId())).
-                findFirst()
-                .orElse(null);
-        if (cartItem != null){
-            cartItem.setQuantity(cartItem.getQuantity() + 1);
-        }else {
-            cartItem = new CartItem();
-            cartItem.setProduct(product);
-            cartItem.setQuantity(1);
-            cartItem.setCart(cart);
-
-            cart.getCartItems().add(cartItem);
-        }
-            cartRepostory.save(cart);
-        var cartItemDto = cartMapper.toDto(cartItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cartItemDto);
-
-
-    }
-
-    public ResponseEntity<CartDto> getCart(UUID cartId) {
-        var cart = cartRepostory.findById(cartId).orElse(null);
-        if (cart == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(cartMapper.toDto(cart));
-
-    }
-
-    public ResponseEntity<?> updateCartItem(UUID cartId, Long productId, UpdateCartItemRequest cartItemRequest) {
-        var cart = cartRepostory.findById(cartId).orElse(null);
-        if (cart == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of("Error","Cart not found")
-            );
+            throw new CartNotFoundException();
         }
         var product = productRepository.findById(productId).orElse(null);
         if (product == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of("Error","Product not found")
-            );
+            throw new ProductNotFoundException();
+        }
+        var cartItem = cart.addItem(product);
+        cartRepostory.save(cart);
+        return cartMapper.toDto(cartItem);
+    }
+
+    public CartDto getCart(UUID cartId) {
+        var cart = cartRepostory.findById(cartId).orElse(null);
+        if (cart == null){
+            throw new CartNotFoundException();
+        }
+        return cartMapper.toDto(cart);
+
+    }
+
+    public CartItemDto updateCartItem(UUID cartId, Long productId, Integer quantity) {
+        var cart = cartRepostory.findById(cartId).orElse(null);
+        if (cart == null){
+            throw new CartNotFoundException();
+
+        }
+        var product = productRepository.findById(productId).orElse(null);
+        if (product == null){
+            throw new ProductNotFoundException();
         }
 
-        var cartItem = cart.getCartItems().stream()
-                .filter(item -> item.getProduct().getId().equals(product.getId()))
-                .findFirst()
-                .orElse(null);
+        var cartItem = cart.getItem(productId);
         if (cartItem == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of("Error","Product not found in this cart")
-            );        }
+            throw new ProductNotFoundException();
+        }
         else {
-            cartItem.setQuantity(cartItemRequest.getQuantity());
+            cartItem.setQuantity(quantity);
         }
         cartRepostory.save(cart);
+        return cartMapper.toDto(cartItem);
 
-        return ResponseEntity.ok(cartMapper.toDto(cartItem));
 
+    }
 
+    public void removeCartItem(UUID cartId, Long productId) {
+        var cart = cartRepostory.findById(cartId).orElse(null);
+        if (cart == null){
+            throw new CartNotFoundException();
+        }
+        var product = productRepository.findById(productId).orElse(null);
+        if (product == null){
+            throw new ProductNotFoundException();
+        }
+        cart.removeItem(product);
+        cartRepostory.save(cart);
+    }
+
+    public void clearCartItem(UUID cartId) {
+        var cart = cartRepostory.findById(cartId).orElse(null);
+        if (cart == null){
+            throw new CartNotFoundException();
+        }
+        cart.clearItem();
+        cartRepostory.save(cart);
     }
 }

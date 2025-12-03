@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -21,44 +22,42 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getAllUsers(
-            @RequestParam(required = false, defaultValue = "", name = "sort") String sort
-    ) {
+            @RequestParam(required = false, defaultValue = "", name = "sort") String sort) {
         return userService.getAllUsers(sort);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+    public UserDto getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     @PostMapping
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserRequest request,
                                               UriComponentsBuilder uriBuilder) {
-        return userService.registerUser(request, uriBuilder);
+        var userDto =userService.registerUser(request);
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
+        return ResponseEntity.created(uri).body(userDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(
+    public UserDto updateUser(
             @PathVariable Long id,
-            @RequestBody UpdateUserRequest request
-    ) {
+            @RequestBody UpdateUserRequest request){
         return userService.updateUser(request, id);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(
-            @PathVariable Long id
-    ) {
-        return userService.deleteUser(id);
-
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/change-password")
     public ResponseEntity<Void> changePassword(
-            @PathVariable Long id,
-            @RequestBody ChangePasswordRequest request
-    ) {
-        return userService.changePassword(id, request);
+            @PathVariable Long id , @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(id, request);
+        return ResponseEntity.noContent().build();
+
     }
 }
