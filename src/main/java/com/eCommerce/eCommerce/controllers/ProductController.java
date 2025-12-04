@@ -2,6 +2,7 @@ package com.eCommerce.eCommerce.controllers;
 
 import com.eCommerce.eCommerce.dtos.responses.ProductDto;
 import com.eCommerce.eCommerce.services.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@Tag(name="Products")
 public class ProductController {
     @Autowired
     private ProductService productService;

@@ -5,7 +5,12 @@ import com.eCommerce.eCommerce.dtos.requests.RegisterUserRequest;
 import com.eCommerce.eCommerce.dtos.requests.UpdateUserRequest;
 import com.eCommerce.eCommerce.dtos.responses.UserDto;
 import com.eCommerce.eCommerce.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
+import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name="Users")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -27,7 +33,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable Long id) {
+    @Operation(summary = "get user")
+    public UserDto getUser(@Parameter(description = "the ID of the user ") @PathVariable Long id) {
         return userService.getUser(id);
     }
 

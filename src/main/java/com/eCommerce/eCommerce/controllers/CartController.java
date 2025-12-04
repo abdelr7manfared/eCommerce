@@ -6,6 +6,7 @@ import com.eCommerce.eCommerce.dtos.requests.CartItemDto;
 import com.eCommerce.eCommerce.dtos.requests.UpdateCartItemRequest;
 import com.eCommerce.eCommerce.entities.CartItem;
 import com.eCommerce.eCommerce.services.CartService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/carts")
 @AllArgsConstructor
+@Tag(name="Carts")
 public class CartController {
     private final CartService cartService;
     @PostMapping
     public ResponseEntity<CartDto> createCart(UriComponentsBuilder builder){
         var cartDto = cartService.createCart();
-        var uri = builder.path("carts").buildAndExpand(cartDto.getId()).toUri();
+        var uri = builder.path("/carts/{}").buildAndExpand(cartDto.getId()).toUri();
         return ResponseEntity.created(uri).body(cartDto);
     }
     @PostMapping("/{uuid}/items")

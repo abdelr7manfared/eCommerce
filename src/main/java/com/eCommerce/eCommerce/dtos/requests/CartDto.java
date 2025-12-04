@@ -3,13 +3,12 @@ package com.eCommerce.eCommerce.dtos.requests;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 @Data
 public class CartDto {
     private UUID id;
-    private List<CartItemDto> items = new ArrayList<>();
+    private Set<CartItemDto> items = new HashSet<>();
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
 }

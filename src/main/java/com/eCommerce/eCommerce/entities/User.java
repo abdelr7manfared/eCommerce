@@ -56,6 +56,10 @@ public class User {
     )
     private Set<Product> favoiriteProduct = new HashSet<>();
 
+    public boolean verfiyPassword(String password){
+        return this.password    .equals( password);
+
+    }
 
 
 

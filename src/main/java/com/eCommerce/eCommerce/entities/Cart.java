@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -25,8 +27,7 @@ public class Cart {
     @Column(name = "date_created", insertable = false, updatable = false)
     private LocalDateTime dateCreated;
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL , orphanRemoval = true)
-    private List<CartItem> cartItems;
-
+    private Set<CartItem> cartItems = new HashSet<>();
 
     public BigDecimal getTotalPrice() {
         return cartItems.stream().map(CartItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
