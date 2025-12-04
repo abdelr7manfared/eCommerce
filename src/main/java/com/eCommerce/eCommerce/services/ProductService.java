@@ -36,18 +36,14 @@ public class ProductService {
     }
 
     public ProductDto getProductById(Long id) {
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null){
-            throw new ProductNotFoundException();
-        }
+        var product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+
         return productMapper.toDto(product);
     }
 
     public ProductDto createProduct(ProductDto productDto) {
-        var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
-        if (category == null){
-            throw new CategoryNotFoundException();
-        }
+        categoryRepository.findById(productDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+
         var product = productMapper.toEntity(productDto);
         productRepository.save(product);
         productDto.setId(product.getId());
@@ -55,16 +51,14 @@ public class ProductService {
     }
 
     public ProductDto updateProduct(Long id, ProductDto productDto) {
-        var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
-        if (category == null){
-            throw new CategoryNotFoundException();
-        }
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null){
-            throw new ProductNotFoundException();
-        }
+        var category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+
+        var product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+
         productMapper.update(productDto,product);
+
         product.setCategory(category);
+
         productRepository.save(product);
 
         return productMapper.toDto(product);
@@ -72,10 +66,8 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
 
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null){
-            throw new ProductNotFoundException();
-        }
+        var product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+
         productRepository.delete(product);
     }
 }

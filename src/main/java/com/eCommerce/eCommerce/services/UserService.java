@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -27,7 +29,7 @@ import java.util.Set;
 public class UserService {
     private final   UserRepository userRepository;
     private final UserMapper userMapper;
-
+    private final PasswordEncoder encoder;
     public List<UserDto> getAllUsers(String sort) {
         if (!Set.of("name","email").contains(sort))
             sort = "name";
@@ -40,18 +42,15 @@ public class UserService {
     }
 
     public UserDto getUser(Long id) {
-        var user =  userRepository.findById(id).orElse(null);
-        if (user == null){
-            throw new UserNotFoundException();
-        }
+        var user =  userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return userMapper.toDto(user);
 
     }
 
     public UserDto registerUser(RegisterUserRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())){
-            throw new EmailAlreadyExistsException();
-        }
+        userRepository.existsByEmail(request.getEmail()).orElseThrow(EmailAlreadyExistsException::new);
+
+        request.setPassword(encoder.encode(request.getPassword()));
         var user = userMapper.toEntity(request);
         userRepository.save(user);
         return   userMapper.toDto(user);
@@ -59,28 +58,22 @@ public class UserService {
 
 
     public UserDto updateUser(UpdateUserRequest request, Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null){
-            throw new UserNotFoundException();
-        }
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
         userMapper.update(request,user);
         userRepository.save(user);
         return userMapper.toDto(user);
     }
 
     public void deleteUser(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null){
-            throw new UserNotFoundException();
-        }
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
         userRepository.delete(user);
     }
 
     public void changePassword(Long id, ChangePasswordRequest request) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null){
-            throw new UserNotFoundException();
-        }
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
         if (!user.getPassword().equals(request.getOldPassword())){
             throw new InvalidOldPasswordException();
         }

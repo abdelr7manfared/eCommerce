@@ -29,38 +29,28 @@ public class CartService {
     }
 
     public CartItemDto addProductToCart(UUID uuid, Long productId) {
-        var cart = cartRepostory.findById(uuid).orElse(null);
-        if (cart == null){
-            throw new CartNotFoundException();
-        }
-        var product = productRepository.findById(productId).orElse(null);
-        if (product == null){
-            throw new ProductNotFoundException();
-        }
+        var cart = cartRepostory.findById(uuid).orElseThrow(CartNotFoundException::new);
+
+        var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+
         var cartItem = cart.addItem(product);
+
         cartRepostory.save(cart);
+
         return cartMapper.toDto(cartItem);
     }
 
     public CartDto getCart(UUID cartId) {
-        var cart = cartRepostory.findById(cartId).orElse(null);
-        if (cart == null){
-            throw new CartNotFoundException();
-        }
-        return cartMapper.toDto(cart);
+        var cart = cartRepostory.findById(cartId).orElseThrow(CartNotFoundException::new);
+
+         return cartMapper.toDto(cart);
 
     }
 
     public CartItemDto updateCartItem(UUID cartId, Long productId, Integer quantity) {
-        var cart = cartRepostory.findById(cartId).orElse(null);
-        if (cart == null){
-            throw new CartNotFoundException();
+        var cart = cartRepostory.findById(cartId).orElseThrow(CartNotFoundException::new);
 
-        }
-        var product = productRepository.findById(productId).orElse(null);
-        if (product == null){
-            throw new ProductNotFoundException();
-        }
+        productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
 
         var cartItem = cart.getItem(productId);
         if (cartItem == null){
@@ -76,23 +66,18 @@ public class CartService {
     }
 
     public void removeCartItem(UUID cartId, Long productId) {
-        var cart = cartRepostory.findById(cartId).orElse(null);
-        if (cart == null){
-            throw new CartNotFoundException();
-        }
-        var product = productRepository.findById(productId).orElse(null);
-        if (product == null){
-            throw new ProductNotFoundException();
-        }
+        var cart = cartRepostory.findById(cartId).orElseThrow(CartNotFoundException::new);
+
+        var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+
+
         cart.removeItem(product);
         cartRepostory.save(cart);
     }
 
     public void clearCartItem(UUID cartId) {
-        var cart = cartRepostory.findById(cartId).orElse(null);
-        if (cart == null){
-            throw new CartNotFoundException();
-        }
+        var cart = cartRepostory.findById(cartId).orElseThrow(CartNotFoundException::new);
+
         cart.clearItem();
         cartRepostory.save(cart);
     }
