@@ -78,4 +78,11 @@ public class GlobalExceptionHandler {
                 Map.of("error","email not found")
         );
     }
+    @ExceptionHandler(TokenNotValid.class)
+    public ResponseEntity<Map<String,String>> handleTokenNotValid(){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                Map.of("error","token not valid")
+        );
+    }
+
 }
