@@ -1,30 +1,36 @@
 package com.eCommerce.eCommerce.services;
 
+import com.eCommerce.eCommerce.config.JwtConfig;
 import com.eCommerce.eCommerce.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+@AllArgsConstructor
 @Service
 public class JwtService {
-    @Value("${spring.jwt.secret}")
-    private String secret;
-    public String genrateToken(User  user){
-        final long tokenExpiration =  60 * 60 * 24; // Seconds per day
+    private final JwtConfig jwtConfig;
+        public String genrateAcessToken(User  user) {
+            return genrateToken(user, jwtConfig.getAccessTokenExpiration());
+        }
 
+        public String genrateRefreshToken(User  user) {
+            return genrateToken(user,jwtConfig.getRefreshTokenExpiration());
+        }
+        public String genrateToken(User  user,int tokenExpiration){
         return Jwts.builder()
                 .claim("name",user.getName())
                 .claim("email",user.getEmail())
                 .subject(user.getId().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .expiration(new Date(System.currentTimeMillis() + 1000L * tokenExpiration))
+                .signWith(jwtConfig.getSecret())
                 .compact();
     }
     public boolean validateToken(String token){
@@ -39,7 +45,7 @@ public class JwtService {
     }
     public Claims getClaims(String token){
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .verifyWith(jwtConfig.getSecret())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
