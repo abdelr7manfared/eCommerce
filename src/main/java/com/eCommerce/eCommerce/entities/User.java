@@ -32,8 +32,13 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToOne(mappedBy = "user")
     private Profile profile;
+
 
     @OneToMany(mappedBy = "user")
     private List<Addresses> addresses = new ArrayList<>();
@@ -57,9 +62,10 @@ public class User {
     private Set<Product> favoiriteProduct = new HashSet<>();
 
     public boolean verfiyPassword(String password){
-        return this.password    .equals( password);
+        return this.password.equals( password);
 
     }
+
 
 
 

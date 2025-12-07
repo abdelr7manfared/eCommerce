@@ -4,6 +4,7 @@ import com.eCommerce.eCommerce.dtos.requests.ChangePasswordRequest;
 import com.eCommerce.eCommerce.dtos.requests.RegisterUserRequest;
 import com.eCommerce.eCommerce.dtos.requests.UpdateUserRequest;
 import com.eCommerce.eCommerce.dtos.responses.UserDto;
+import com.eCommerce.eCommerce.entities.Role;
 import com.eCommerce.eCommerce.exceptions.EmailAlreadyExistsException;
 import com.eCommerce.eCommerce.exceptions.InvalidOldPasswordException;
 import com.eCommerce.eCommerce.exceptions.UserNotFoundException;
@@ -52,8 +53,11 @@ public class UserService {
 
         request.setPassword(encoder.encode(request.getPassword()));
         var user = userMapper.toEntity(request);
+
+        user.setRole(Role.USER);
+
         userRepository.save(user);
-        return   userMapper.toDto(user);
+        return userMapper.toDto(user);
     }
 
 

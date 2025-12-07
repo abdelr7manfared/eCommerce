@@ -1,5 +1,6 @@
 package com.eCommerce.eCommerce.config;
 
+import com.eCommerce.eCommerce.entities.Role;
 import com.eCommerce.eCommerce.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,14 +47,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request
                         .requestMatchers("/carts/**", "/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/users").permitAll()
+                        .requestMatchers("/admin/**", "/auth/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/users/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(ex ->
-                        ex.authenticationEntryPoint(
-                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-                        ))
+                .exceptionHandling(ex ->{
+                    ex.authenticationEntryPoint(
+                            new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+                    );
+                    ex.accessDeniedHandler((request, response, accessDeniedException) ->
+                            response.setStatus(HttpStatus.FORBIDDEN.value()));
+
+                })
                 .build();
 
     }
