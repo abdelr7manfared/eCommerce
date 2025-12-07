@@ -30,21 +30,23 @@ public class AuthService {
         var accesstoken = jwtService.genrateAcessToken(user);
         var refreshToken = jwtService.genrateRefreshToken(user);
 
-        return new TokenResponse(accesstoken,refreshToken);
+        return new TokenResponse(accesstoken.toString(),refreshToken.toString());
     }
 
     public boolean validate(String token) {
-        return jwtService.validateToken(token);
+        var jwt = jwtService.parseToken(token);
+        return (jwt != null && !jwt.isExpired(token));
     }
 
     public JwtResponse refresh(String refreshToken) {
-        if (!jwtService.validateToken(refreshToken)){
+        var jwt = jwtService.parseToken(refreshToken);
+        if (jwt == null || jwt.isExpired(refreshToken)){
             throw new TokenNotValid();
         }
-        var userId = jwtService.getUserIdFromToken(refreshToken);
+        var userId = jwt.getUserID(refreshToken);
         var user = userRepository.findById(userId).orElseThrow();
         var accessToken = jwtService.genrateAcessToken(user);
-        return new JwtResponse(accessToken);
+        return new JwtResponse(accessToken.toString());
 
     }
 }

@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserRequest request,
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserRequest request,
                                               UriComponentsBuilder uriBuilder) {
         var userDto =userService.registerUser(request);
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
