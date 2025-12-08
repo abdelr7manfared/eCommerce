@@ -2,7 +2,6 @@ package com.eCommerce.eCommerce.mappers;
 
 import com.eCommerce.eCommerce.dtos.requests.CartDto;
 import com.eCommerce.eCommerce.dtos.requests.CartItemDto;
-import com.eCommerce.eCommerce.dtos.requests.UpdateCartItemRequest;
 import com.eCommerce.eCommerce.entities.Cart;
 import com.eCommerce.eCommerce.entities.CartItem;
 import org.mapstruct.Mapper;

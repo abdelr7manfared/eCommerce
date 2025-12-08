@@ -3,8 +3,7 @@ package com.eCommerce.eCommerce.controllers;
 import com.eCommerce.eCommerce.dtos.requests.AddItemToCartRequest;
 import com.eCommerce.eCommerce.dtos.requests.CartDto;
 import com.eCommerce.eCommerce.dtos.requests.CartItemDto;
-import com.eCommerce.eCommerce.dtos.requests.UpdateCartItemRequest;
-import com.eCommerce.eCommerce.entities.CartItem;
+import com.eCommerce.eCommerce.dtos.requests.UpdateQuantityRequest;
 import com.eCommerce.eCommerce.services.CartService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -43,7 +42,7 @@ public class CartController {
     @PutMapping("/{cartId}/items/{productId}")
     public CartItemDto updateCartItem(@PathVariable UUID cartId ,
                           @PathVariable Long productId   ,
-                          @Valid @RequestBody UpdateCartItemRequest cartItemRequest){
+                          @Valid @RequestBody UpdateQuantityRequest cartItemRequest){
         return cartService.updateCartItem(cartId,productId,cartItemRequest.getQuantity());
     }
     @DeleteMapping("/{cartId}/items/{productId}")

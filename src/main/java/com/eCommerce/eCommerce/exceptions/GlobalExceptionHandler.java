@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<Map<String,String>> handleCartNotFound(){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 Map.of("error","cart not found")
         );
     }
@@ -84,5 +84,10 @@ public class GlobalExceptionHandler {
                 Map.of("error","token not valid")
         );
     }
-
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleOrderNotFoundException(){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                Map.of("error","Order not valid")
+        );
+    }
 }

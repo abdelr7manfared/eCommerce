@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-@Component
 public class Jwt {
     private final SecretKey secreKey;
     private final Claims claims;
