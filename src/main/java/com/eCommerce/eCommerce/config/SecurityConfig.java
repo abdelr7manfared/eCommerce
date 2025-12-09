@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request
                         .requestMatchers( "/auth/**").permitAll()
+                        .requestMatchers( HttpMethod.POST,"/checkout/webhook").permitAll()
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/users/**").permitAll()
                         .anyRequest().authenticated()

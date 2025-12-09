@@ -36,6 +36,13 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<Map<String,String>> handlePaymentException(){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                Map.of("error","error in checkout session")
+        );
+    }
+
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String,String>> handleUsertNotFound(){

@@ -7,4 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class CheckoutResponse {
     private Long orderId;
+    private String url;
+
 }
