@@ -167,6 +167,11 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <!-- Spring Boot Maven Plugin (adds Main-Class and makes fat/executable jar) -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
