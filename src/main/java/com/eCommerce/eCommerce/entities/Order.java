@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -25,7 +24,7 @@ public class Order {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
     @Column(name = "created_at",insertable = false,updatable = false)
     private Date createdAt;
@@ -39,7 +38,7 @@ public class Order {
 
     public static Order fromCart(Cart cart,User Customer) {
         var order = new Order();
-        order.setStatus(Status.PENDING);
+        order.setPaymentStatus(PaymentStatus.PENDING);
         order.setTotalPrice(cart.getTotalPrice());
         order.setCustomer(Customer);
 

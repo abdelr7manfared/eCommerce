@@ -1,7 +1,6 @@
 package com.eCommerce.eCommerce.dtos.requests;
 
-import com.eCommerce.eCommerce.entities.OrderItem;
-import com.eCommerce.eCommerce.entities.Status;
+import com.eCommerce.eCommerce.entities.PaymentStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,7 +10,7 @@ import java.util.Set;
 public class OrderDto {
 
     private Long id;
-    private Status status;
+    private PaymentStatus paymentStatus;
     private Date createdAt;
     private BigDecimal totalPrice;
     private Set<OrderItemDto> orderItem;

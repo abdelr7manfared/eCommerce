@@ -1,6 +1,6 @@
 package com.eCommerce.eCommerce.entities;
 
-public enum Status {
+public enum PaymentStatus {
     PENDING,
     PAID,
     FAILED,

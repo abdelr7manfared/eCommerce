@@ -3,10 +3,13 @@ package com.eCommerce.eCommerce.controllers;
 import com.eCommerce.eCommerce.dtos.requests.CheckoutRequest;
 import com.eCommerce.eCommerce.dtos.responses.CheckoutResponse;
 import com.eCommerce.eCommerce.services.CheckoutService;
+import com.eCommerce.eCommerce.services.WebhookRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/checkout")
@@ -20,9 +23,9 @@ public class CheckoutController {
     }
     @PostMapping("/webhook")
     public void handleWebhook(
-            @RequestHeader("Stripe-Signature") String signature,
+            @RequestHeader Map<String,String> headers,
             @RequestBody String payload) {
-        checkoutService.handleWebhook(signature,payload);
+        checkoutService.handleWebhook(new WebhookRequest(headers,payload));
 
     }
 }
