@@ -1,5 +1,7 @@
 # E-Commerce API — Spring Boot
 
+##  Description 
+
 This project is a clean and production-ready **E-Commerce REST API** built with **Spring Boot**.  
 It includes authentication, user profiles, products, cart, orders, and Stripe checkout.  
 The architecture is **feature-based**, making the project easy to maintain and extend.
