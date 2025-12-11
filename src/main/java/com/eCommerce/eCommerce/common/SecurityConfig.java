@@ -1,5 +1,6 @@
-package com.eCommerce.eCommerce.auth;
+package com.eCommerce.eCommerce.common;
 
+import com.eCommerce.eCommerce.auth.JwtAuthenticationFilter;
 import com.eCommerce.eCommerce.users.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +22,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final List<SecurityRules> securityRules;
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder(12);
@@ -42,13 +46,10 @@ public class SecurityConfig {
                 session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request
-                        .requestMatchers( "/auth/**").permitAll()
-                        .requestMatchers( HttpMethod.POST,"/checkout/webhook").permitAll()
-                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST,"/users/**").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(request ->{
+                        securityRules.forEach(r->r.configure(request));
+                        request.anyRequest().authenticated();
+                        }
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex ->{
