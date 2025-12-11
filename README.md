@@ -42,12 +42,15 @@ The architecture is **feature-based**, making the project easy to maintain and e
 ##  Project Structure (Feature-Based)
 
 Each feature contains its own controller, service, repository, entity, and DTOs:
+```
 auth/
 users/
 products/
 carts/
 orders/
 payments/
+EcommerceApplication.java
+``` 
 
 This structure keeps the code modular and scalable.
 
@@ -59,11 +62,11 @@ This structure keeps the code modular and scalable.
 - `POST /auth/refresh`  
 - `POST /auth/login`
 
-### User  
-- `GET /user`  
-- `PUT /user`
+### Users  
+- `GET /users`  
+- `PUT /users`
 
-### Cart  
+### Carts
 - `GET /carts`  
 - `POST /carts`  
 - `DELETE /carts/{cartId}/items/{productId}`
@@ -73,13 +76,23 @@ This structure keeps the code modular and scalable.
 - `GET /orders/{id}`
 
   
-### Payment  
+### Payments  
   
 - `POST /checkout`
 - `POST /checkout/webhook`
 
+  
 
-## 🌐 Live API (Production)
+## Class diagram
+![Class](https://github.com/abdelr7manfared/eCommerce/blob/main/docs/classDigram.JPG)
+
+
+## API Documentation
+Swagger UI is available at:
+
+https://ecommerce-production-e6ae.up.railway.app/swagger-ui.html
+
+## Live API (Production)
 **Base URL:**  
 `https://ecommerce-production-e6ae.up.railway.app`
 
